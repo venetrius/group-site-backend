@@ -7,6 +7,7 @@ const cookieSession = require('cookie-session');
 const morgan        = require("morgan");
 const app           = express();
 const cors          = require('cors');
+require('dotenv').config();
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -20,9 +21,9 @@ app.use(cookieSession({
 const projectRoutes = require("./routes/projects.js")(null);
 app.use("/projects", projectRoutes);
 
-const server = app.listen(PORT, () => {
+const server = app.listen(process.env.PORT || PORT, () => {
 
-  console.log("Example app listening on port " + PORT);
+  console.log("Example app listening on port " + (process.env.PORT || PORT));
 
 });
 
