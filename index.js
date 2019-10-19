@@ -1,12 +1,14 @@
 "use strict";
 
-const PORT          = 8080;
+const PORT          = 3030;
 const express       = require("express");
 const bodyParser    = require("body-parser");
 const cookieSession = require('cookie-session');
 const morgan        = require("morgan");
 const app           = express();
+const cors          = require('cors');
 
+app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -15,6 +17,8 @@ app.use(cookieSession({
   keys: ['key1', 'key2']
 }));
 
+const projectRoutes = require("./routes/projects.js")(null);
+app.use("/projects", projectRoutes);
 
 const server = app.listen(PORT, () => {
 
