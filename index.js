@@ -18,7 +18,10 @@ app.use(cookieSession({
   keys: ['key1', 'key2']
 }));
 
-const projectRoutes = require("./routes/projects.js")(null);
+
+const datahelpers = require('./DataHelpers/data-helpers');
+
+const projectRoutes = require("./routes/projects.js")(datahelpers);
 app.use("/projects", projectRoutes);
 
 const server = app.listen(process.env.PORT || PORT, () => {
