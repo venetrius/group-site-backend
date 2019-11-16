@@ -19,9 +19,9 @@ app.use(cookieSession({
 }));
 
 
-const datahelpers = require('./DataHelpers/data-helpers');
+const datahelpers = require('./src//DataHelpers/data-helpers');
 
-const projectRoutes = require("./routes/projects.js")(datahelpers);
+const projectRoutes = require("./src/routes/projects.js")(datahelpers);
 app.use("/projects", projectRoutes);
 
 const server = app.listen(process.env.PORT || PORT, () => {
