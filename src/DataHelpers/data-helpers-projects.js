@@ -15,9 +15,6 @@ module.exports = function(knex){
     }
   
     function addProject(cb, project) {
-      //return cb(null, "goood job");
-
-      console.log(cb, project)
       knex('projects')
       .insert(project)
       .returning('*')

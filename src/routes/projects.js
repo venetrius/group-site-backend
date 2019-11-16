@@ -39,13 +39,9 @@ module.exports = function(DataHelpers) {
   })
 
   projectRoutes.post('/', function(req,res){
-    console.log('received post request', req.body)
-   /* DataHelpers.projects_helpers.addProject(getPostCallback(res), 
-    {"name":"something cool",
-    "description":"better than the previous",
-    "stack":"node.js,react.js,psql"})*/
-    res.status(201).send('ok');
-
+    const project = req.body
+    project.selected_stack = project.selected_stack.toString()
+    DataHelpers.projects_helpers.addProject(getPostCallback(res), project)
   })  
   return projectRoutes;
 };
