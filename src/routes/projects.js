@@ -40,10 +40,12 @@ module.exports = function(DataHelpers) {
 
   projectRoutes.post('/', function(req,res){
     console.log('received post request', req.body)
-    DataHelpers.projects_helpers.addProject(getPostCallback(res), 
+   /* DataHelpers.projects_helpers.addProject(getPostCallback(res), 
     {"name":"something cool",
     "description":"better than the previous",
-    "stack":"node.js,react.js,psql"})
+    "stack":"node.js,react.js,psql"})*/
+    res.status(201).send('ok');
+
   })  
   return projectRoutes;
 };
