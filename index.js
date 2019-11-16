@@ -12,6 +12,7 @@ require('dotenv').config();
 app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use(cookieSession({
   name: 'session',
