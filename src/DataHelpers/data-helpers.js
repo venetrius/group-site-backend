@@ -19,7 +19,8 @@ const knex = require('knex')({
     connection
 });
 const dataHelpers = {
-  projects_helpers : require('./data-helpers-projects')(knex)
+  projects_helpers : require('./data-helpers-projects')(knex),
+  commets          : require('./comments')(knex)
 }
 
 module.exports = dataHelpers;

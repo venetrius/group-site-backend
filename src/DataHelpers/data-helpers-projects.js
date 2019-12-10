@@ -1,8 +1,4 @@
 module.exports = function(knex){
-
-  //==============================================
-  //       GET USER - By Id, username, email
-  //==============================================
     
     function getProjects(cb) {
       knex.select('*').from('projects')

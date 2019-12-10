@@ -9,10 +9,11 @@ const projectRoutes  = express.Router();
 //         HELPER FUNCTIONS
 //==============================================
 
+// TODO maybe general cb
 const getPostCallback = function(res){
   const postCallback = function(err, result){
-    console.log("callback", err, result)
     if(err){
+      console.log({error})
       res.status(404).send('error');
     }
     res.status(201).send(result);
@@ -42,6 +43,18 @@ module.exports = function(DataHelpers) {
     const project = req.body
     project.selected_stack = project.selected_stack.toString()
     DataHelpers.projects_helpers.addProject(getPostCallback(res), project)
-  })  
+  })
+  
+  projectRoutes.post('/:project/comments', function(req,res){
+    let comment = req.body
+    comment.project_id = req.params.project
+    DataHelpers.comments.addComment(getPostCallback(res), comment)
+  })
+
+  projectRoutes.get('/:project/comments/', function(req,res){
+    const project_id = req.params.project
+    DataHelpers.comments.getComments(getPostCallback(res), project_id)
+  })
+
   return projectRoutes;
 };
