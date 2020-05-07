@@ -18,8 +18,10 @@ const knex = require('knex')({
     client: 'pg',
     connection
 });
+
 const dataHelpers = {}
 dataHelpers. projects_helpers = require('./data-helpers-projects')(knex),
 dataHelpers.comments          = require('./comments')(knex)
+dataHelpers.users             = require('./users')(knex)
 
 module.exports = dataHelpers;
