@@ -26,12 +26,17 @@ function middleware(req, res, next) {
 
     req.user = user;
   }
-  if (user == null) {
-    res.status(400).json({ error: "Unauthorized" });
+  next();
+}
+
+const authorize = (req, res, next) => {
+  if (!req.user) {
+    res.status(403).json({ error: "Unauthorized" });
     return
   }
   next();
 }
+
 app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,8 +45,8 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/auth', authRoutes);
-app.use("/projects", projectRoutes);
-app.use("/user", middleware, usersRoutes);
+app.use("/projects", middleware, projectRoutes);
+app.use("/user", middleware, authorize, usersRoutes);
 
 const server = app.listen(process.env.PORT || PORT, () => {
 

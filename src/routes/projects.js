@@ -65,9 +65,14 @@ module.exports = function(DataHelpers) {
   })
 
   projectRoutes.post('/', function(req,res){
+    if (!req.user) {
+      res.status(403).json({ error: "Unauthorized" });
+      return
+    }
     const project = req.body
     project.selected_stack = project.selected_stack.toString()
     project.created_at = new Date().toISOString();
+    project.created_by = req.user.id
     DataHelpers.projects_helpers.addProject(getPostCallback(res), project)
   })
 
