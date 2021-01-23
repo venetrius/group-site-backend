@@ -1,13 +1,10 @@
 module.exports = function(knex){
     function getComments(cb, project_id) {
-      knex.select('*').from('comments')
-        .where('project_id', project_id)
-        .asCallback(function(err, comments) {
-          if (err) {
-            return cb(err);
-          }
-          cb(null, comments)
-        });
+      knex('comments')
+      .join('users', 'users.id', 'comments.user_id')
+      .select('comments.id', 'users.display_name', 'users.photo', 'comments.comment', 'comments.created_at')
+      .where('project_id', project_id)
+        .asCallback(cb);
     }
 
     function addComment(cb, comment) {

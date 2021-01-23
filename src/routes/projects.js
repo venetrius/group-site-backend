@@ -77,7 +77,12 @@ module.exports = function(DataHelpers) {
   })
 
   projectRoutes.post('/:project/comments', function(req,res){
+    if (!req.user) {
+      res.status(403).json({ error: "Unauthorized" });
+      return
+    }
     let comment = req.body
+    comment.user_id = req.user.id
     comment.project_id = req.params.project
     comment.created_at = new Date().toISOString();
     DataHelpers.comments.addComment(getPostCallback(res), comment)
