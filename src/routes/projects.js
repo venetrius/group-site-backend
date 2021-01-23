@@ -13,7 +13,7 @@ const projectRoutes  = express.Router();
 const getPostCallback = function(res){
   const postCallback = function(err, result){
     if(err){
-      console.log({error})
+      console.log({err})
       res.status(404).send('error');
     }
     res.status(201).send(result);
@@ -21,11 +21,36 @@ const getPostCallback = function(res){
   return postCallback
 }
 
+const handleError = (res, err) => {
+  console.log({err})
+  res.status(500).send('Unexpected error'); // TODO
+}
 
 //==============================================
 //         PROJECT ROUTES
 //==============================================
 module.exports = function(DataHelpers) {
+  const getCommentForProjectCb = res => {
+    const getCommentsForProject = (err, project) => {
+      if(err){
+        return handleError(res, err)
+      }
+      const finishRequestCb = (error, comments) => {
+        if(error){
+          return handleError(res, err)
+        } else{
+          res.status(200).send(JSON.stringify({ project, comments }))
+        }
+      }
+      DataHelpers.comments.getComments(finishRequestCb, project[0].id)
+    }
+    return getCommentsForProject
+  }
+
+  projectRoutes.get('/:project/', function(req,res){
+    const project_id = req.params.project
+    DataHelpers.projects_helpers.getProject(project_id, getCommentForProjectCb(res))
+  })
 
   projectRoutes.get("/", function(req, res){
     DataHelpers.projects_helpers.getProjects(function(err, projects){
@@ -42,12 +67,14 @@ module.exports = function(DataHelpers) {
   projectRoutes.post('/', function(req,res){
     const project = req.body
     project.selected_stack = project.selected_stack.toString()
+    project.created_at = new Date().toISOString();
     DataHelpers.projects_helpers.addProject(getPostCallback(res), project)
   })
-  
+
   projectRoutes.post('/:project/comments', function(req,res){
     let comment = req.body
     comment.project_id = req.params.project
+    comment.created_at = new Date().toISOString();
     DataHelpers.comments.addComment(getPostCallback(res), comment)
   })
 
