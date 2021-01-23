@@ -4,12 +4,12 @@ module.exports = function(knex){
         .where('project_id', project_id)
         .asCallback(function(err, comments) {
           if (err) {
-            cb(err);
+            return cb(err);
           }
           cb(null, comments)
         });
     }
-  
+
     function addComment(cb, comment) {
       knex('comments')
       .insert(comment)
@@ -21,10 +21,9 @@ module.exports = function(knex){
           cb(null, comments)
         });
     }
-  
-    return { 
+
+    return {
       getComments,
       addComment
     }
-  
   }

@@ -31,7 +31,6 @@ setUpLinkedinPassport = function (dataHelpers){
       clientSecret: process.env.GITHUB_CLIENT_SECRET
     },
     function(accessToken, refreshToken, profile, done) {
-      console.log("token:", accessToken)
       dataHelpers.getUserByToken(
         profile.id,
         function (error, user) {
@@ -42,7 +41,6 @@ setUpLinkedinPassport = function (dataHelpers){
             dataHelpers.createUser(
               userProfile,
               function (err, user) {
-                console.log('created user', user) // TODO remove
                 done(null, user[0]);
               }
             );

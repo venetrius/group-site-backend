@@ -9,7 +9,6 @@ module.exports = (dataHelper) => passport.use(new JWTStrategy({
         secretOrKey   : process.env.JWT_SECRET
     },
     function (jwtPayload, cb) {
-      console.log({jwtPayload})
         return dataHelper.getUserById(jwtPayload.id)
             .then(user => {
                 return cb(null, user);
