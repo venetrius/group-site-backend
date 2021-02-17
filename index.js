@@ -15,6 +15,7 @@ const path = require('path');
 const authRoutes    = require('./src/routes/auth-routes');
 const usersRoutes   = require('./src/routes/users');
 const projectRoutes = require("./src/routes/projects.js")(datahelpers);
+const eventRoutes = require("./src/routes/events.js")(datahelpers);
 
 // TODO: move this function from this file
 function middleware(req, res, next) {
@@ -46,6 +47,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/auth', authRoutes);
 app.use("/projects", middleware, projectRoutes);
+app.use("/events", eventRoutes);
+
 app.use("/user", middleware, authorize, usersRoutes);
 
 const server = app.listen(process.env.PORT || PORT, () => {

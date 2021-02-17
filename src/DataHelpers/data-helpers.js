@@ -23,5 +23,6 @@ const dataHelpers = {}
 dataHelpers. projects_helpers = require('./data-helpers-projects')(knex),
 dataHelpers.comments          = require('./comments')(knex)
 dataHelpers.users             = require('./users')(knex)
+dataHelpers.events             = require('./data-helpers-events')(knex)
 
 module.exports = dataHelpers;
