@@ -5,8 +5,9 @@ module.exports = function(knex){
         .asCallback(function(err, events) {
           if (err) {
             cb(err);
+          } else {
+            cb(null, events)
           }
-          cb(null, events)
         });
     }
 
@@ -17,7 +18,11 @@ module.exports = function(knex){
           if (err) {
             cb(err);
           }
-          cb(null, event[0])
+          else if(event.length) {
+            cb('not found')
+          } else {
+            cb(null, event[0])
+          }
         });
     }
 

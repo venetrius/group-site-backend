@@ -10,7 +10,11 @@ const eventRoutes  = express.Router();
 module.exports = function(DataHelpers) {
 
   eventRoutes.get('/:event/', function(req,res){
-    const eventId = req.params.event
+    const eventId = parseInt(req.params.event)
+    if(!eventId){
+      res.status(404).send('wrong request');
+      return
+    }
     DataHelpers.events.getEvent(eventId, function(err, event){
       if(err || ! event){
         res.status(404).send('wrong request');
