@@ -47,7 +47,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/auth', authRoutes);
 app.use("/projects", middleware, projectRoutes);
-app.use("/events", eventRoutes);
+app.use("/events", middleware, eventRoutes);
 
 app.use("/user", middleware, authorize, usersRoutes);
 

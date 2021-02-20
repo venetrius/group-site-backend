@@ -37,5 +37,23 @@ module.exports = function(DataHelpers) {
 
   })
 
+  eventRoutes.post('/:event/users', function(req,res){
+    const eventId = parseInt(req.params.event)
+    if(!eventId){
+      return res.status(404).send('wrong request');
+    }
+    if (!req.user) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    DataHelpers.events.registerUserForEvent(eventId, req.user.id, function(err, result){
+      if(err){
+        res.status(404).send('wrong request');
+      }
+      else{
+        res.status(200).send(JSON.stringify(result))
+      }
+    })
+  })
+
   return eventRoutes;
 };

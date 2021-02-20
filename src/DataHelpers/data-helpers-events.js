@@ -18,7 +18,7 @@ module.exports = function(knex){
           if (err) {
             cb(err);
           }
-          else if(event.length) {
+          else if(!event.length) {
             cb('not found')
           } else {
             cb(null, event[0])
@@ -26,9 +26,22 @@ module.exports = function(knex){
         });
     }
 
+    function registerUserForEvent(eventId, userId, cb) {
+      knex('events_users')
+      .insert({event_id: eventId, user_id: userId})
+      .returning('*')
+      .asCallback(function(err, eventUser) {
+          if (err) {
+            cb(err);
+          }
+          cb(null, eventUser)
+        });
+    }
+
     return {
       getEvents,
-      getEvent
+      getEvent,
+      registerUserForEvent
     }
 
   }
