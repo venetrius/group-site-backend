@@ -2,8 +2,8 @@
 exports.up = function(knex) {
   return knex.schema.createTable("events_users", function (table) {
     table.increments('id')
-    table.text('event_id')
-    table.text('user_id')
+    table.bigInteger('event_id')
+    table.bigInteger('user_id')
   })
 };
 
