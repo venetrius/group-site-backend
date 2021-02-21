@@ -14,14 +14,21 @@ module.exports = function(knex){
     function getEvent(eventId, cb) {
       knex.select('*').from('events')
         .where('id', eventId)
-        .asCallback(function(err, event) {
+        .asCallback(function(err, events) {
           if (err) {
             cb(err);
           }
-          else if(!event.length) {
+          else if(!events.length) {
             cb('not found')
           } else {
-            cb(null, event[0])
+            getUsersForEvent(eventId, function(error, users){
+              if (error) {
+                cb(error);
+              } else {
+                events[0].users = users
+                cb(null, events[0])
+              }
+            })
           }
         });
     }
@@ -34,13 +41,27 @@ module.exports = function(knex){
           if (err) {
             cb(err);
           }
-          cb(null, eventUser)
+          getUsersForEvent(eventId, cb)
         });
+    }
+
+    function getUsersForEvent(eventId, cb) {
+      knex('events_users')
+      .join('users', 'events_users.user_id', '=', 'users.id')
+      .where('events_users.event_id', eventId)
+      .asCallback(function(err, user_ids) {
+        if (err) {
+          cb(err);
+        } else {
+          cb(null, user_ids)
+        }
+      });
     }
 
     return {
       getEvents,
       getEvent,
+      getUsersForEvent,
       registerUserForEvent
     }
 
