@@ -2,7 +2,19 @@
 
 const express       = require('express');
 const eventRoutes  = express.Router();
+const { Unauthorized, BadRequest } = require('../utils/errors/index')
 
+const getCallback = res => {
+  return function(err, result) {
+    if(err) {
+      const errorCode = err.code || 500
+      const errorMessage = err.message || 'internal error'
+      res.status(errorCode).send(errorMessage);
+    } else {
+      res.status(200).send(JSON.stringify(result))
+    }
+  }
+}
 
 //==============================================
 //         EVENT ROUTES
@@ -34,25 +46,32 @@ module.exports = function(DataHelpers) {
         res.status(200).send(JSON.stringify(events))
       }
     })
-
   })
 
-  eventRoutes.post('/:event/users', function(req,res){
-    const eventId = parseInt(req.params.event)
+  const registerUser = async ({ eventId, userId }, cb ) => {
     if(!eventId){
-      return res.status(404).send('wrong request');
+      cb(BadRequest())
     }
-    if (!req.user) {
-      return res.status(403).json({ error: "Unauthorized" });
+    if (userId) {
+      cb(Unauthorized())
+    } else {
+      DataHelpers.events.registerUserForEvent(eventId, userId, function(err, result){
+        if (err) {
+          cb(err)
+        } else {
+          cb(null, { status: 201,  message:result })
+        }
+      })
     }
-    DataHelpers.events.registerUserForEvent(eventId, req.user.id, function(err, result){
-      if(err){
-        res.status(404).send('wrong request');
-      }
-      else{
-        res.status(200).send(JSON.stringify(result))
-      }
-    })
+
+  }
+
+  eventRoutes.post('/:event/users', function(req, res){
+    const data = {
+      eventId: parseInt(req.params.event),
+      user: req.user
+    }
+    registerUser(data, getCallback(res))
   })
 
   return eventRoutes;
