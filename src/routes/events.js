@@ -32,7 +32,8 @@ module.exports = function(DataHelpers) {
       if(err || ! event){
         res.status(404).send('wrong request');
       }
-      else{
+      else {
+        event.open = Date.parse(event.date) > new Date().getTime()
         res.status(200).send(JSON.stringify(event))
       }
     })
