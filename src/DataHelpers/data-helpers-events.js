@@ -1,3 +1,7 @@
+const {
+  NotFoundError,
+} = require('../utils/errors/index')
+
 module.exports = function(knex){
 
     function getEvents(cb) {
@@ -33,11 +37,27 @@ module.exports = function(knex){
         });
     }
 
-    function registerUserForEvent(eventId, userId, cb) {
+    const isEventExist = async id => (await (knex.select('*').from('events').where({ id }).where('date', '>', new Date()))).length
+
+    const isEventUserExist = async (event_id, user_id) =>
+      (await knex.select('*').from('events_users').where({ event_id, user_id })).length
+
+
+    async function registerUserForEvent(eventId, userId, cb) {
+      const eventExist = await isEventExist(eventId)
+      if(!eventExist) {
+        return cb(NotFoundError())
+      }
+      const eventUserExist = await isEventUserExist(eventId, userId)
+
+      if (eventUserExist) {
+        console.log({eventUserExist})
+        return getUsersForEvent(eventId, cb)
+      }
       knex('events_users')
       .insert({event_id: eventId, user_id: userId})
       .returning('*')
-      .asCallback(function(err, eventUser) {
+      .asCallback(function(err) {
           if (err) {
             cb(err);
           }

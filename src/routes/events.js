@@ -5,9 +5,10 @@ const eventRoutes  = express.Router();
 const { Unauthorized, BadRequest } = require('../utils/errors/index')
 
 const getCallback = res => {
-  return function(err, { status = 200, message } ) {
+  return function(err, success = {} ) {
+    const { status = 200, message } = success
     if(err) {
-      const errorCode = err.code || 500
+      const errorCode = err.status || 500
       const errorMessage = err.message || 'internal error'
       res.status(errorCode).send(errorMessage);
     } else {
