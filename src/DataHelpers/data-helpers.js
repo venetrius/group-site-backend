@@ -1,22 +1,27 @@
 require('dotenv').config();
 
-let connection
+let options
 
 if(process.env.NODE_ENV === 'development'){
-  connection =  {
-    host     : process.env.DB_HOST,
-    user     : process.env.DB_USER,
-    password : process.env.DB_PASS,
-    database : process.env.DB_NAME,
-    port     : process.env.DB_PORT,
-    ssl      : process.env.DB_SSL
+  options = {
+    connection:  {
+      host     : process.env.DB_HOST,
+      user     : process.env.DB_USER,
+      password : process.env.DB_PASS,
+      database : process.env.DB_NAME,
+      port     : process.env.DB_PORT,
+      ssl      : process.env.DB_SSL
+    }
   }
 }else{
-  connection = process.env.DATABASE_URL + '?ssl=true'
+  options = {
+    connection: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  }
 }
 const knex = require('knex')({
     client: 'pg',
-    connection
+    ...options
 });
 
 const dataHelpers = {}
