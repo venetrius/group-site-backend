@@ -24,7 +24,7 @@ const createUserProfile = function(profile){
   return userProfile;
 }
 
-setUpLinkedinPassport = function (dataHelpers){
+const setUpLinkedinPassport = function (dataHelpers){
   passport.use(
     new GitHubStrategy({
       clientID: process.env.GITHUB_CLIENT_ID,

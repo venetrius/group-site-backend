@@ -38,8 +38,8 @@ const authorize = (req, res, next) => {
   next();
 }
 
+// app.use(morgan('dev'));
 app.use(cors());
-app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
