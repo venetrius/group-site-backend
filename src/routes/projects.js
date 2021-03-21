@@ -33,10 +33,12 @@ module.exports = function(DataHelpers) {
   const getCommentForProjectCb = res => {
     const getCommentsForProject = (err, project) => {
       if(err){
+        console.log('getCommentsForProject', {err})
         return handleError(res, err)
       }
       const finishRequestCb = (error, comments) => {
         if(error){
+          console.log('finishRequestCb', {err})
           return handleError(res, err)
         } else{
           res.status(200).send(JSON.stringify({ project, comments }))
@@ -55,6 +57,7 @@ module.exports = function(DataHelpers) {
   projectRoutes.get("/", function(req, res){
     DataHelpers.projects_helpers.getProjects(function(err, projects){
       if(err){
+        console.log('projects_helpers', {err})
         res.status(404).send('wrong request');
       }
       else{
