@@ -1,5 +1,3 @@
-"use strict";
-
 const express       = require('express');
 const eventRoutes  = express.Router();
 const { Unauthorized, BadRequest } = require('../utils/errors/index')
@@ -17,9 +15,6 @@ const getCallback = res => {
   }
 }
 
-//==============================================
-//         EVENT ROUTES
-//==============================================
 module.exports = function(DataHelpers) {
 
   eventRoutes.get('/:event/', function(req,res){

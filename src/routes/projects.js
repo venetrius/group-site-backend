@@ -1,15 +1,6 @@
-"use strict";
-
 const express       = require('express');
 const projectRoutes  = express.Router();
 
-
-
-//==============================================
-//         HELPER FUNCTIONS
-//==============================================
-
-// TODO maybe general cb
 const getPostCallback = function(res){
   const postCallback = function(err, result){
     if(err){
@@ -26,9 +17,6 @@ const handleError = (res, err) => {
   res.status(500).send('Unexpected error'); // TODO
 }
 
-//==============================================
-//         PROJECT ROUTES
-//==============================================
 module.exports = function(DataHelpers) {
   const getCommentForProjectCb = res => {
     const getCommentsForProject = (err, project) => {
