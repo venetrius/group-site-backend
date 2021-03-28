@@ -1,16 +1,6 @@
 const express       = require('express');
 const projectRoutes  = express.Router();
-
-const getPostCallback = function(res){
-  const postCallback = function(err, result){
-    if(err){
-      console.log({err})
-      res.status(404).send('error');
-    }
-    res.status(201).send(result);
-  }
-  return postCallback
-}
+const responseHelper = require('./helpers/response')
 
 const handleError = (res, err) => {
   console.log({err})
@@ -64,7 +54,7 @@ module.exports = function(DataHelpers) {
     project.selected_stack = project.selected_stack.toString()
     project.created_at = new Date().toISOString();
     project.created_by = req.user.id
-    DataHelpers.projects_helpers.addProject(getPostCallback(res), project)
+    DataHelpers.projects_helpers.addProject(responseHelper(res), project)
   })
 
   projectRoutes.post('/:project/comments', function(req,res){
@@ -76,12 +66,12 @@ module.exports = function(DataHelpers) {
     comment.user_id = req.user.id
     comment.project_id = req.params.project
     comment.created_at = new Date().toISOString();
-    DataHelpers.comments.addComment(getPostCallback(res), comment)
+    DataHelpers.comments.addComment(responseHelper(res), comment)
   })
 
   projectRoutes.get('/:project/comments/', function(req,res){
     const project_id = req.params.project
-    DataHelpers.comments.getComments(getPostCallback(res), project_id)
+    DataHelpers.comments.getComments(responseHelper(res, 200), project_id)
   })
 
   return projectRoutes;

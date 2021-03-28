@@ -1,19 +1,7 @@
 const express       = require('express');
 const eventRoutes  = express.Router();
 const { Unauthorized, BadRequest } = require('../utils/errors/index')
-
-const getCallback = res => {
-  return function(err, success = {} ) {
-    const { status = 200, message } = success
-    if(err) {
-      const errorCode = err.status || 500
-      const errorMessage = err.message || 'internal error'
-      res.status(errorCode).send(errorMessage);
-    } else {
-      res.status(status).send(JSON.stringify(message))
-    }
-  }
-}
+const responseHelper = require('./helpers/response')
 
 module.exports = function(DataHelpers) {
 
@@ -53,13 +41,7 @@ module.exports = function(DataHelpers) {
     if (!userId) {
       cb(Unauthorized())
     } else {
-      DataHelpers.events.registerUserForEvent(eventId, userId, function(err, result){
-        if (err) {
-          cb(err)
-        } else {
-          cb(null, { status: 201,  message:result })
-        }
-      })
+      DataHelpers.events.registerUserForEvent(eventId, userId, cb)
     }
 
   }
@@ -69,7 +51,7 @@ module.exports = function(DataHelpers) {
       eventId: parseInt(req.params.event),
       user: req.user
     }
-    registerUser(data, getCallback(res))
+    registerUser(data, responseHelper(res))
   })
 
   return eventRoutes;
