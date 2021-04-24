@@ -43,7 +43,18 @@ module.exports = function(DataHelpers) {
     } else {
       DataHelpers.events.registerUserForEvent(eventId, userId, cb)
     }
+  }
 
+  const registerProject = async ({ eventId, projectId, user = {} }, cb ) => {
+    const userId = user.id
+    if(!eventId){
+      cb(BadRequest())
+    }
+    if (!userId) {
+      cb(Unauthorized())
+    } else {
+      DataHelpers.events.registerProjectForEvent(eventId, projectId, cb)
+    }
   }
 
   eventRoutes.post('/:event/users', function(req, res){
@@ -52,6 +63,16 @@ module.exports = function(DataHelpers) {
       user: req.user
     }
     registerUser(data, responseHelper(res))
+  })
+
+  eventRoutes.post('/:event/projects', function(req, res){
+    const  { projectId } = req.body
+    const data = {
+      eventId: parseInt(req.params.event),
+      user: req.user,
+      projectId
+    }
+    registerProject(data, responseHelper(res))
   })
 
   return eventRoutes;

@@ -45,9 +45,14 @@ module.exports = function(knex){
     }
 
     const isEventExist = async id => (await (knex.select('*').from('events').where({ id }).where('date', '>', new Date()))).length
+    const isProjectExist = async id => (await (knex.select('*').from('projects').where({ id }))).length
+
 
     const isEventUserExist = async (event_id, user_id) =>
       (await knex.select('*').from('events_users').where({ event_id, user_id })).length
+
+    const isEventProjectExist = async (event_id, project_id) =>
+      (await knex.select('*').from('events_projects').where({ event_id, project_id })).length
 
 
     async function registerUserForEvent(eventId, userId, cb) {
@@ -69,6 +74,31 @@ module.exports = function(knex){
             cb(err);
           }
           getUsersForEvent(eventId, cb)
+        });
+    }
+
+    async function registerProjectForEvent(eventId, projectId, cb) {
+      const eventExist = await isEventExist(eventId)
+      const projectExist = await isProjectExist(projectId)
+
+      if(!eventExist || !projectExist) {
+        return cb(NotFoundError())
+      }
+
+      const eventProjectExist = await isEventProjectExist(eventId, projectId)
+
+      if (eventProjectExist) {
+        return getProjectsForEvent(eventId, cb)
+      }
+
+      knex('events_projects')
+      .insert({event_id: eventId, project_id: projectId})
+      .returning('*')
+      .asCallback(function(err) {
+          if (err) {
+            cb(err);
+          }
+          getProjectsForEvent(eventId, cb)
         });
     }
 
@@ -102,6 +132,7 @@ module.exports = function(knex){
       getEvents,
       getEvent,
       getUsersForEvent,
+      registerProjectForEvent,
       registerUserForEvent
     }
 
