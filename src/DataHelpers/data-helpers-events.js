@@ -29,8 +29,15 @@ module.exports = function(knex){
               if (error) {
                 cb(error);
               } else {
-                events[0].users = users
-                cb(null, events[0])
+                getProjectsForEvent(eventId, function(error, projects){
+                  if (error) {
+                    cb(error);
+                  } else {
+                    events[0].users = users
+                    events[0].projects = projects
+                    cb(null, events[0])
+                  }
+                })
               }
             })
           }
@@ -74,6 +81,19 @@ module.exports = function(knex){
           cb(err);
         } else {
           cb(null, user_ids)
+        }
+      });
+    }
+
+    function getProjectsForEvent(eventId, cb) {
+      knex('events_projects')
+      .join('projects', 'events_projects.project_id', '=', 'projects.id')
+      .where('events_projects.event_id', eventId)
+      .asCallback(function(err, projects) {
+        if (err) {
+          cb(err);
+        } else {
+          cb(null, projects)
         }
       });
     }
