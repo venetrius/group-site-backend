@@ -77,7 +77,7 @@ module.exports = function(knex){
         });
     }
 
-    async function registerProjectForEvent(eventId, projectId, cb) {
+    async function registerProjectForEvent(eventId, projectId, userId, cb) {
       const eventExist = await isEventExist(eventId)
       const projectExist = await isProjectExist(projectId)
 
@@ -92,7 +92,7 @@ module.exports = function(knex){
       }
 
       knex('events_projects')
-      .insert({event_id: eventId, project_id: projectId})
+      .insert({event_id: eventId, project_id: projectId, created_by: userId})
       .returning('*')
       .asCallback(function(err) {
           if (err) {
@@ -118,6 +118,7 @@ module.exports = function(knex){
     function getProjectsForEvent(eventId, cb) {
       knex('events_projects')
       .join('projects', 'events_projects.project_id', '=', 'projects.id')
+      .join('users', 'events_projects.created_by', '=', 'users.id')
       .where('events_projects.event_id', eventId)
       .asCallback(function(err, projects) {
         if (err) {

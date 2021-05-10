@@ -53,7 +53,7 @@ module.exports = function(DataHelpers) {
     if (!userId) {
       cb(Unauthorized())
     } else {
-      DataHelpers.events.registerProjectForEvent(eventId, projectId, cb)
+      DataHelpers.events.registerProjectForEvent(eventId, projectId,userId, cb)
     }
   }
 
