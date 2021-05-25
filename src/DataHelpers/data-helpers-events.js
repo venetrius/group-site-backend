@@ -105,6 +105,7 @@ module.exports = function(knex){
     function getUsersForEvent(eventId, cb) {
       knex('events_users')
       .join('users', 'events_users.user_id', '=', 'users.id')
+      .select('users.id', 'users.display_name', 'users.photo')
       .where('events_users.event_id', eventId)
       .asCallback(function(err, user_ids) {
         if (err) {
@@ -119,6 +120,7 @@ module.exports = function(knex){
       knex('events_projects')
       .join('projects', 'events_projects.project_id', '=', 'projects.id')
       .join('users', 'events_projects.created_by', '=', 'users.id')
+      .select('events_projects.project_id', 'projects.*','users.id as userId', 'users.display_name', 'users.photo')
       .where('events_projects.event_id', eventId)
       .asCallback(function(err, projects) {
         if (err) {
