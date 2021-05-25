@@ -2,6 +2,13 @@ require('dotenv').config();
 module.exports = {
 
   development: {
+    client: 'sqlite3',
+    connection: {
+      filename: './dev.sqlite3'
+    },
+    useNullAsDefault: true
+  },
+  developmentPg: {
     client: 'pg',
     connection: {
       host     : process.env.DB_HOST,

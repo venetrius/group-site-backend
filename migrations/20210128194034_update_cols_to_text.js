@@ -1,15 +1,12 @@
-
 exports.up = async function(knex, Promise) {
-  await knex.raw(`
-  ALTER TABLE projects
-  ALTER COLUMN summary  TYPE text;
+  await knex.schema.alterTable('projects', function(table) {
+      table.string('description').alter();
+      table.string('comments').alter();
+  });
+}
 
-  ALTER TABLE projects
-  ALTER COLUMN description  TYPE text;
-
-  ALTER TABLE comments
-  ALTER COLUMN comment  TYPE text;
-`);
-};
-
-exports.down = function(knex) {};
+exports.down = async function(knex, Promise) {
+  await knex.schema.alterTable('comments', function(table) {
+    table.string('user_id').alter();
+  });
+}

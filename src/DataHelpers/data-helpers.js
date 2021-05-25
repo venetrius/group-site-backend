@@ -1,28 +1,38 @@
 require('dotenv').config();
 
-let options
+let knex
 
-if(process.env.NODE_ENV === 'development'){
-  options = {
-    connection:  {
-      host     : process.env.DB_HOST,
-      user     : process.env.DB_USER,
-      password : process.env.DB_PASS,
-      database : process.env.DB_NAME,
-      port     : process.env.DB_PORT,
-      ssl      : process.env.DB_SSL
-    }
-  }
-}else{
-  options = {
-    connection: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-  }
-}
-const knex = require('knex')({
+if (process.env.NODE_ENV === 'developmentPg'){
+  knex = require('knex')({
     client: 'pg',
-    ...options
+    options: {
+      connection:  {
+        host     : process.env.DB_HOST,
+        user     : process.env.DB_USER,
+        password : process.env.DB_PASS,
+        database : process.env.DB_NAME,
+        port     : process.env.DB_PORT,
+        ssl      : process.env.DB_SSL
+      }
+    }
+  })
+} else if(process.env.NODE_ENV === 'development') {
+  knex = require('knex')({
+    client: 'sqlite3',
+    connection: () => ({
+      filename: './dev.sqlite3'
+    }),
+    useNullAsDefault: true
+  });
+} else {
+  knex = require('knex')({
+    client: 'pg',
+    options: {
+      connection: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    }
 });
+}
 
 const dataHelpers = {}
 dataHelpers. projects_helpers = require('./data-helpers-projects')(knex),
