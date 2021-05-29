@@ -46,7 +46,7 @@ const setUpLinkedinPassport = function (dataHelpers){
                 console.log({err})
                 console.log('user created', user)
 
-                done(null, user[0]);
+                done(null, user);
               }
             );
           }
