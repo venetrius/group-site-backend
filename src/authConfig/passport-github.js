@@ -31,16 +31,21 @@ const setUpLinkedinPassport = function (dataHelpers){
       clientSecret: process.env.GITHUB_CLIENT_SECRET
     },
     function(accessToken, refreshToken, profile, done) {
+      console.log('trying to fech user', profile)
       dataHelpers.getUserByToken(
         profile.id,
         function (error, user) {
           if (user) {
+            console.log('user found', user)
             done(null, user);
           } else {
             const userProfile = createUserProfile(profile);
             dataHelpers.createUser(
               userProfile,
               function (err, user) {
+                console.log({err})
+                console.log('user created', user)
+
                 done(null, user[0]);
               }
             );
