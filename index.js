@@ -12,7 +12,7 @@ const passportSetup = require('./src/authConfig/passport-github')(datahelpers.us
 const jwt = require('jsonwebtoken');
 
 const path = require('path');
-const authRoutes    = require('./src/routes/auth-routes');
+const authRoutes    = require('./src/routes/auth-routes')(datahelpers.users);
 const usersRoutes   = require('./src/routes/users');
 const projectRoutes = require("./src/routes/projects.js")(datahelpers);
 const eventRoutes = require("./src/routes/events.js")(datahelpers);
