@@ -1,16 +1,18 @@
+require("dotenv").config();
+
 const router = require("express").Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+
 const { get, post } = require("axios");
-// const { findOrCreateUser } = require('../authConfig/passport-github')
-require("dotenv").config();
+
 module.exports = function (dataHelpers) {
   const createUserProfile = function (profile) {
     const userProfile = {
       token: profile.id,
-      photo: profile.photos.length > 0 ? profile.photos[0].value : null,
-      display_name: profile.displayName,
-      user_name: profile.username,
+      photo: null,
+      display_name: profile.name,
+      user_name: profile.login,
     };
     return userProfile;
   };
@@ -71,5 +73,7 @@ module.exports = function (dataHelpers) {
       }
     });
   });
+
   return router;
+
 };
