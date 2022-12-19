@@ -59,6 +59,13 @@ module.exports = function (dataHelpers) {
     passport.authenticate("github", { scope: ["user:email"] })
   );
 
+  // router.post("", function (req, res) {
+  //   console.log("post on auth root")
+  //       const token = jwt.sign({name: 'gergo'}, process.env.JWT_SECRET);
+  //       console.log(user.name)
+  //       res.send(JSON.stringify({ token }));
+  // });
+
   router.post("/github/callback", function (req, res) {
     fetchUserData(req.body.code, (error, user) => {
       if (error) {

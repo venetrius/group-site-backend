@@ -16,13 +16,13 @@ module.exports = function(DataHelpers) {
       }
       const finishRequestCb = (error, comments) => {
         if(error){
-          console.log('finishRequestCb', {err})
+          console.log('finishRequestCb', {err, comments})
           return handleError(res, err)
         } else{
           res.status(200).send(JSON.stringify({ project, comments }))
         }
       }
-      DataHelpers.comments.getComments(finishRequestCb, project[0].id)
+      DataHelpers.comments.getComments(finishRequestCb, project[0].id, 'project')
     }
     return getCommentsForProject
   }
@@ -64,7 +64,8 @@ module.exports = function(DataHelpers) {
     }
     let comment = req.body
     comment.user_id = req.user.id
-    comment.project_id = req.params.project
+    comment.foregin_key = req.params.project
+    comment.parent_entity = 'project'
     comment.created_at = new Date().toISOString();
     DataHelpers.comments.addComment(responseHelper(res), comment)
   })

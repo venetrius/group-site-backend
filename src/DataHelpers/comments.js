@@ -1,9 +1,9 @@
 module.exports = function(knex){
-    function getComments(cb, project_id) {
+    function getComments(cb, entity_id, entity) {
       knex('comments')
       .join('users', 'users.id', 'comments.user_id')
       .select('comments.id', 'users.display_name', 'users.photo', 'comments.comment', 'comments.created_at')
-      .where('project_id', project_id)
+      .where({'foregin_key': Number(entity_id), "parent_entity": entity})
         .asCallback(cb);
     }
 
