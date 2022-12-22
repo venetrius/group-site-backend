@@ -1,6 +1,6 @@
 const express       = require('express');
 const projectRoutes  = express.Router();
-const responseHelper = require('./helpers/response')
+const { responseHandler, listResponseHandler } = require('./helpers/response')
 
 const handleError = (res, err) => {
   console.log({err})
@@ -54,7 +54,7 @@ module.exports = function(DataHelpers) {
     project.selected_stack = project.selected_stack.toString()
     project.created_at = new Date().toISOString();
     project.created_by = req.user.id
-    DataHelpers.projects_helpers.addProject(responseHelper(res), project)
+    DataHelpers.projects_helpers.addProject(responseHandler(res), project)
   })
 
   projectRoutes.post('/:project/comments', function(req,res){
@@ -66,12 +66,12 @@ module.exports = function(DataHelpers) {
     comment.user_id = req.user.id
     comment.project_id = req.params.project
     comment.created_at = new Date().toISOString();
-    DataHelpers.comments.addComment(responseHelper(res), comment)
+    DataHelpers.comments.addComment(responseHandler(res), comment)
   })
 
   projectRoutes.get('/:project/comments/', function(req,res){
     const project_id = req.params.project
-    DataHelpers.comments.getComments(responseHelper(res, 200), project_id)
+    DataHelpers.comments.getComments(responseHandler(res, 200), project_id)
   })
 
   return projectRoutes;

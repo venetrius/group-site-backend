@@ -1,14 +1,30 @@
-const responseHandler = (res, successCode = 201) => {
+const responseHandler = (res, successCode = 201, validator) => {
   return function(err, data ) {
-    console.log({data})
     if(err) {
       const errorCode = err.status || 500
       const errorMessage = err.message || 'internal error'
       res.status(errorCode).send(errorMessage);
-    } else {
+    } else if(validator && !validator.validate(data)) {
+      res.status(validator.error.errorCode, validator.error.errorMessage)
+    }
+    else {
       res.status(successCode).send(JSON.stringify(data))
     }
   }
 }
 
-module.exports = responseHandler;
+
+const exsistsValidator = a => ({
+  validate: (a === null || a === undefined), 
+  error: {errorMessage: "Not Found", errorCode: 404}
+})
+
+const indexResponseHandler = (res) => responseHandler(res, 200, exsistsValidator)
+
+const listResponseHandler = (res) => responseHandler(res, 200)
+
+module.exports = {
+  responseHandler,
+  indexResponseHandler,
+  listResponseHandler
+};

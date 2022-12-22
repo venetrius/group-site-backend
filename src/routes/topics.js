@@ -1,30 +1,17 @@
 const express       = require('express');
 const topicRoutes  = express.Router();
-const responseHelper = require('./helpers/response')
+const { responseHandler, listResponseHandler } = require('./helpers/response')
+
 
 module.exports = function(DataHelpers) {
 
   topicRoutes.get('/:topic/', function(req, res){
     const topicId = parseInt(req.params.topic)
-    DataHelpers.topics.getTopic(topicId, function(err, topic){
-      if(err){
-        res.status(404).send('wrong request');
-      }
-      else{
-        res.status(200).send(JSON.stringify(topic))
-      }
-    })
+    DataHelpers.topics.getTopic(topicId, responseHandler(res, 200))
   })
 
   topicRoutes.get("/", function(req, res){
-    DataHelpers.topics.getTopics(function(err, topics){
-      if(err){
-        res.status(404).send('wrong request');
-      }
-      else{
-        res.status(200).send(JSON.stringify(topics))
-      }
-    })
+    DataHelpers.topics.getTopics(listResponseHandler(res, 200))
   })
 
   topicRoutes.post('/', function(req,res){
@@ -35,7 +22,7 @@ module.exports = function(DataHelpers) {
     const topic = req.body
     topic.created_at = new Date().toISOString();
     topic.created_by = req.user.id
-    DataHelpers.topics.addTopic(responseHelper(res), topic)
+    DataHelpers.topics.addTopic(responseHandler(res), topic)
   })
 
   return topicRoutes;
