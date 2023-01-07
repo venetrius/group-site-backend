@@ -4,10 +4,28 @@ const { responseHandler, listResponseHandler } = require('./helpers/response')
 
 
 module.exports = function(DataHelpers) {
+  const getCommentForTopicCb = res => {
+    const getCommentsForTopic = (err, topic) => {
+      if(err){
+        console.log('getCommentsForTopic', {err})
+        return handleError(res, err)
+      }
+      const finishRequestCb = (error, comments) => {
+        if(error){
+          console.log('finishRequestCb', {err, comments})
+          return handleError(res, err)
+        } else{
+          res.status(200).send(JSON.stringify({ topic, comments }))
+        }
+      }
+      DataHelpers.comments.getComments(finishRequestCb, topic.id, 'topic')
+    }
+    return getCommentsForTopic
+  }
 
   topicRoutes.get('/:topic/', function(req, res){
     const topicId = parseInt(req.params.topic)
-    DataHelpers.topics.getTopic(topicId, responseHandler(res, 200))
+    DataHelpers.topics.getTopic(topicId, getCommentForTopicCb(res))
   })
 
   topicRoutes.get("/", function(req, res){
