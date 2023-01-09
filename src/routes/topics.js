@@ -55,5 +55,17 @@ module.exports = function(DataHelpers) {
     comment.created_at = new Date().toISOString();
     DataHelpers.comments.addComment(responseHandler(res), comment)
   })
+
+  topicRoutes.post('/:topic/resources', function(req,res){
+    if (!req.user) {
+      res.status(403).json({ error: "Unauthorized" });
+      return
+    }
+    let resource = req.body
+    resource.created_by = req.user.id
+    resource.created_at = new Date().toISOString();
+    DataHelpers.resources.add(responseHandler(res), resource, 'topic', req.params.topic)
+  })
+
   return topicRoutes;
 };

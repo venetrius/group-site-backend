@@ -8,7 +8,30 @@ module.exports = function(knex){
           .where({'resource_relations.entity_id': Number(entity_id), "resource_relations.entity_type": entity})
       );
     }
+
+    function add(cb, resource, entity_type, entity_id) {
+      knex.transaction(function(trx) {
+        knex.insert(resource, 'id')
+          .into('resources')
+          .transacting(trx)
+          .then(function(id) {
+            const relation = {
+              entity_type,
+              entity_id,
+              resource_id: id[0]
+            }
+            resource.id = id[0]
+
+            knex('resource_relations').insert(relation).transacting(trx)
+            .then(trx.commit)
+            .catch(() => {trx.rollback(), cb("rolled back",null)})
+            .then(cb(null, resource));
+          })
+      })
+    }
+
     return {
-      getResources,
+      add,
+      getResources
     }
   }
