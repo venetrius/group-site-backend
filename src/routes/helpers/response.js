@@ -14,12 +14,12 @@ const responseHandler = (res, successCode = 201, validator) => {
 }
 
 
-const exsistsValidator = a => ({
+const existsValidator = a => ({
   validate: (a === null || a === undefined), 
   error: {errorMessage: "Not Found", errorCode: 404}
 })
 
-const indexResponseHandler = (res) => responseHandler(res, 200, exsistsValidator)
+const indexResponseHandler = (res) => responseHandler(res, 200, existsValidator)
 
 const listResponseHandler = (res) => responseHandler(res, 200)
 
