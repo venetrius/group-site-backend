@@ -25,8 +25,10 @@ const knex = require('knex')({
 });
 
 const dataHelpers = {}
-dataHelpers. projects_helpers = require('./data-helpers-projects')(knex),
+dataHelpers. projects_helpers = require('./data-helpers-projects')(knex)
+dataHelpers.topics = require('./data-helpers-topics')(knex)
 dataHelpers.comments          = require('./comments')(knex)
+dataHelpers.resources          = require('./resources')(knex)
 dataHelpers.users             = require('./users')(knex)
 dataHelpers.events             = require('./data-helpers-events')(knex)
 

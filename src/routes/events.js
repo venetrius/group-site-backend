@@ -1,7 +1,7 @@
 const express       = require('express');
 const eventRoutes  = express.Router();
 const { Unauthorized, BadRequest } = require('../utils/errors/index')
-const responseHelper = require('./helpers/response')
+const { responseHandler, listResponseHandler } = require('./helpers/response')
 
 module.exports = function(DataHelpers) {
 
@@ -23,14 +23,7 @@ module.exports = function(DataHelpers) {
   })
 
   eventRoutes.get("/", function(req, res){
-    DataHelpers.events.getEvents(function(err, events){
-      if(err){
-        res.status(404).send('wrong request');
-      }
-      else{
-        res.status(200).send(JSON.stringify(events))
-      }
-    })
+    DataHelpers.events.getEvents(listResponseHandler(res))
   })
 
   const registerUser = async ({ eventId, user = {} }, cb ) => {
@@ -62,7 +55,7 @@ module.exports = function(DataHelpers) {
       eventId: parseInt(req.params.event),
       user: req.user
     }
-    registerUser(data, responseHelper(res))
+    registerUser(data, responseHandler(res))
   })
 
   eventRoutes.post('/:event/projects', function(req, res){
@@ -72,7 +65,7 @@ module.exports = function(DataHelpers) {
       user: req.user,
       projectId
     }
-    registerProject(data, responseHelper(res))
+    registerProject(data, responseHandler(res))
   })
 
   return eventRoutes;

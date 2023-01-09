@@ -1,6 +1,8 @@
 const express       = require('express');
 const projectRoutes  = express.Router();
-const responseHelper = require('./helpers/response')
+const { responseHandler, listResponseHandler } = require('./helpers/response')
+
+const PROJECT_ENTITY = 'project'
 
 const handleError = (res, err) => {
   console.log({err})
@@ -22,7 +24,7 @@ module.exports = function(DataHelpers) {
           res.status(200).send(JSON.stringify({ project, comments }))
         }
       }
-      DataHelpers.comments.getComments(finishRequestCb, project[0].id)
+      DataHelpers.comments.getComments(finishRequestCb, project[0].id, PROJECT_ENTITY)
     }
     return getCommentsForProject
   }
@@ -54,7 +56,7 @@ module.exports = function(DataHelpers) {
     project.selected_stack = project.selected_stack.toString()
     project.created_at = new Date().toISOString();
     project.created_by = req.user.id
-    DataHelpers.projects_helpers.addProject(responseHelper(res), project)
+    DataHelpers.projects_helpers.addProject(responseHandler(res), project)
   })
 
   projectRoutes.post('/:project/comments', function(req,res){
@@ -64,14 +66,15 @@ module.exports = function(DataHelpers) {
     }
     let comment = req.body
     comment.user_id = req.user.id
-    comment.project_id = req.params.project
+    comment.foregin_key = req.params.project
     comment.created_at = new Date().toISOString();
-    DataHelpers.comments.addComment(responseHelper(res), comment)
+    comment.parent_entity = PROJECT_ENTITY
+    DataHelpers.comments.addComment(responseHandler(res), comment)
   })
 
   projectRoutes.get('/:project/comments/', function(req,res){
     const project_id = req.params.project
-    DataHelpers.comments.getComments(responseHelper(res, 200), project_id)
+    DataHelpers.comments.getComments(responseHandler(res, 200), project_id)
   })
 
   return projectRoutes;
