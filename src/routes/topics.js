@@ -2,20 +2,20 @@ const express       = require('express');
 const topicRoutes  = express.Router();
 const { responseHandler, listResponseHandler } = require('./helpers/response')
 
-
 module.exports = function(DataHelpers) {
   const getCommentForTopicCb = res => {
-    const getCommentsForTopic = (err, topic) => {
+    const getCommentsForTopic = async (err, topic) => {
       if(err){
         console.log('getCommentsForTopic', {err})
         return handleError(res, err)
       }
-      const finishRequestCb = (error, comments) => {
+      const finishRequestCb = async (error, comments) => {
         if(error){
           console.log('finishRequestCb', {err, comments})
           return handleError(res, err)
         } else{
-          res.status(200).send(JSON.stringify({ topic, comments }))
+          const resources = await DataHelpers.resources.getResources(topic.id, 'topic')
+          res.status(200).send(JSON.stringify({ topic, comments, resources }))
         }
       }
       DataHelpers.comments.getComments(finishRequestCb, topic.id, 'topic')
