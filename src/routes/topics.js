@@ -43,5 +43,17 @@ module.exports = function(DataHelpers) {
     DataHelpers.topics.addTopic(responseHandler(res), topic)
   })
 
+  topicRoutes.post('/:topic/comments', function(req,res){
+    if (!req.user) {
+      res.status(403).json({ error: "Unauthorized" });
+      return
+    }
+    let comment = req.body
+    comment.user_id = req.user.id
+    comment.foregin_key = req.params.topic
+    comment.parent_entity = 'topic'
+    comment.created_at = new Date().toISOString();
+    DataHelpers.comments.addComment(responseHandler(res), comment)
+  })
   return topicRoutes;
 };
